@@ -1,0 +1,1 @@
+// for making extension tailwind intellisense work
