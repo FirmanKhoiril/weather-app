@@ -9,14 +9,13 @@
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
     <title>Weather App</title>
-    <script>
+    <script defer>
       tailwind.config = {
         theme: {
           extend: {
             colors: {
               primary: '#4169e1',
               secondary: '#5BBCE4',
-              clifford: '#da373d',
             },
           }
         }
@@ -24,41 +23,114 @@
     </script>
 </head>
 <body class="bg-primary text-white">
-    <main class="flex py-16 container gap-20 h-full mx-auto flex-col">
-      
+    <main class="flex py-16 container gap-14 h-full mx-auto flex-col">
       <div class="w-full flex justify-between items-center gap-8">
         <div>
           <h1 class="text-5xl font-bold">
-            Weather <br />
+            Weather, <br />
             Forecast & Alerts
           </h1>
           <p class="mt-3 text-base text-white/90">
             Stay on top of weather conditions, forecasts,<br/> 
             personalized alerts, and detailed insights for your location. 
-          
           </p>
         </div>
-        <div class="flex flex-col gap-2 justify-center">
-          <div class="flex items-center">
-            <img src="./images/icons/thermometer.svg" width="100" alt="Thermometer icon">
+        <div class="flex flex-col gap-2 p-8 shadow-lg relative bg-white/20 rounded-lg justify-center">
+          <img src="./images/icons/partly-cloudy-day.svg" alt="partly-cloudy-day" class="absolute -top-24 -right-20 drop-shadow-md" height="250" width="250">
+          <div class="absolute top-2.5 left-2.5 border border-white rounded-full flex items-center gap-2 pl-1 pr-4">
+            <img src="./images/icons/down.svg" alt="dropdown icon" width="30" height="30">
+            <p>Semarang</p>
+          </div>
+          <div class="flex items-center -ml-[34px] pt-4">
+            <img src="./images/icons/thermometer-celsius.svg" width="90" height="90" alt="Thermometer icon">
             <h1 class="font-montserrat text-7xl">30&deg;</h1>
           </div>
-          <h2 class="text-5xl">Semarang</h2>
-          <p id="realTimeDate" class="font-montserrat text-white/80 text-lg"></p>
+          <p id="realTimeDate" class="font-montserrat text-white/80 text-2xl mb-1"></p>
+          <div class="flex items-center justify-between gap-3 w-full">
+            <div class="flex flex-col bg-white/20 text-white/90 p-2 items-center rounded-lg">
+              <img src="./images/icons/umbrella.svg" alt="humidity icon" width="50" height="50">
+              <p class="font-montserrat">30%</p>
+              <h2 class="text-[17px]">
+                 Precipitation
+              </h2>
+            </div>
+            <div class="flex flex-col bg-white/20 text-white/90 p-2 items-center rounded-lg">
+              <img src="./images/icons/humidity.svg" alt="humidity icon" width="50" height="50">
+              <p class="font-montserrat">68%</p>
+              <h2 class="text-[17px]">
+                 Humanity
+              </h2>
+            </div>
+            <div class="flex flex-col bg-white/20 text-white/90 p-2 items-center rounded-lg">
+              <img src="./images/icons/wind.svg" alt="humidity icon" width="50" height="50">
+              <p class="font-montserrat">12km/h</p>
+              <h2 class="text-[17px]">
+                 Wind Speed
+              </h2>
+            </div>
+          </div>
         </div>
       </div>
       <div class="flex justify-center items-center">
         <form class="relative w-[500px]">
-          <input type="text" placeholder="Enter your location" class="bg-transparent border-white max-w-[500px] placeholder:text-white/80 pl-12 pr-4 py-3 w-full border rounded-full focus:border-white/80 tracking-wide">
-          <button type="submit" class="absolute z-10 p-2 left-[4px] top-[2px]">
+          <input type="text" placeholder="Enter your location" class="bg-transparent border-white max-w-[500px] placeholder:text-white/80 pl-[50px] pr-4 py-3 w-full border rounded-full focus:border-white/80 tracking-wide">
+          <button type="submit" class="absolute z-10 p-2 left-[4px] -top-[4px]">
             <img src="./images/icons/map.svg" alt="Map Icon" width="30" height="30">
           </button>
         </form>
       </div>
-      <div class="flex flex-col gap-8 ">
+      <div class="flex flex-col gap-8">
         <h2 class="text-2xl">Days</h2>
-        <div class="">
-          <img src="./images/icons/clear-day.svg" alt="">
+        <div class="flex items-center gap-8 justify-center">
+          <div class="bg-white/20 rounded-lg p-2 h-[240px] w-[200px] shadow-lg items-center flex flex-col">
+            <img src="./images/icons/wind.svg" width="50" height="50" alt="Clear day">
+            <p class="text-lg">Sunday</p>
+            <div class="">
+              Test
+            </div>
+          </div>
+          <div class="bg-white/20 rounded-lg p-2 h-[240px] w-[200px] shadow-lg items-center flex flex-col">
+            <img src="./images/icons/wind.svg" width="50" height="50" alt="Clear day">
+            <p class="text-lg">Tuesday</p>
+            <div class="">
+              Test
+            </div>
+          </div>
+          <div class="bg-white/20 rounded-lg p-2 h-[240px] w-[200px] shadow-lg items-center flex flex-col">
+            <img src="./images/icons/wind.svg" width="50" height="50" alt="Clear day">
+            <p class="text-lg">Wednesday</p>
+            <div class="">
+              Test
+            </div>
+          </div>
+          <div class="bg-white/20 rounded-lg p-2 h-[240px] w-[200px] shadow-lg items-center flex flex-col">
+            <img src="./images/icons/wind.svg" width="50" height="50" alt="Clear day">
+            <p class="text-lg">Thursday</p>
+            <div class="">
+              Test
+            </div>
+          </div>
+          <div class="bg-white/20 rounded-lg p-2 h-[240px] w-[200px] shadow-lg items-center flex flex-col">
+            <img src="./images/icons/wind.svg" width="50" height="50" alt="Clear day">
+            <p class="text-lg">Friday</p>
+            <div class="">
+              Test
+            </div>
+          </div>
+          <div class="bg-white/20 rounded-lg p-2 h-[240px] w-[200px] shadow-lg items-center flex flex-col">
+            <img src="./images/icons/wind.svg" width="50" height="50" alt="Clear day">
+            <p class="text-lg">Saturday</p>
+            <div class="">
+              Test
+            </div>
+          </div>
+          <div class="bg-white/20 rounded-lg p-2 h-[240px] w-[200px] shadow-lg items-center flex flex-col">
+            <img src="./images/icons/wind.svg" width="50" height="50" alt="Clear day">
+            <p class="text-lg">Sunday</p>
+            <div class="">
+              Test
+            </div>
+          </div>
         </div>
       </div>
     </main>

@@ -20,6 +20,14 @@
     background-color: var(--primary);
     color: #fff;
   }
+  
   .font-montserrat {
     font-family: "Montserrat", serif;
+  }
+
+  .text-primary {
+    color: var(--primary);
+  }
+  .text-secondary {
+    color: var(--secondary);
   }
