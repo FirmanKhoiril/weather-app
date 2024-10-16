@@ -37,7 +37,7 @@
         </div>
         <div class="flex flex-col gap-2 p-8 shadow-lg relative bg-white/20 rounded-lg justify-center">
           <img src="./images/icons/partly-cloudy-day.svg" alt="partly-cloudy-day" class="absolute -top-24 -right-20 drop-shadow-md" height="250" width="250">
-          <div class="absolute top-2.5 left-2.5 border border-white rounded-full flex items-center gap-2 pl-1 pr-4">
+          <div class="absolute top-3 left-[33px] border border-white rounded-full flex items-center gap-2 pl-1 pr-4">
             <img src="./images/icons/down.svg" alt="dropdown icon" width="30" height="30">
             <p>Semarang</p>
           </div>
@@ -47,21 +47,21 @@
           </div>
           <p id="realTimeDate" class="font-montserrat text-white/80 text-2xl mb-1"></p>
           <div class="flex items-center justify-between gap-3 w-full">
-            <div class="flex flex-col bg-white/20 text-white/90 p-2 items-center rounded-lg">
+            <div class="flex flex-col bg-white/20 text-white/90 p-2.5 items-center rounded-lg">
               <img src="./images/icons/umbrella.svg" alt="humidity icon" width="50" height="50">
               <p class="font-montserrat">30%</p>
               <h2 class="text-[17px]">
                  Precipitation
               </h2>
             </div>
-            <div class="flex flex-col bg-white/20 text-white/90 p-2 items-center rounded-lg">
+            <div class="flex flex-col bg-white/20 text-white/90 p-2.5 items-center rounded-lg">
               <img src="./images/icons/humidity.svg" alt="humidity icon" width="50" height="50">
               <p class="font-montserrat">68%</p>
               <h2 class="text-[17px]">
-                 Humanity
+                 Humidity
               </h2>
             </div>
-            <div class="flex flex-col bg-white/20 text-white/90 p-2 items-center rounded-lg">
+            <div class="flex flex-col bg-white/20 text-white/90 p-2.5 items-center rounded-lg">
               <img src="./images/icons/wind.svg" alt="humidity icon" width="50" height="50">
               <p class="font-montserrat">12km/h</p>
               <h2 class="text-[17px]">
@@ -73,9 +73,12 @@
       </div>
       <div class="flex justify-center items-center">
         <form class="relative w-[500px]">
-          <input type="text" placeholder="Enter your location" class="bg-transparent border-white max-w-[500px] placeholder:text-white/80 pl-[50px] pr-4 py-3 w-full border rounded-full focus:border-white/80 tracking-wide">
+          <input type="text" placeholder="Enter your location" class="bg-transparent border-white max-w-[500px] placeholder:text-white/80 pl-[50px] pr-4 py-3 w-full border rounded-full focus:border-white/80 tracking-wide" id="search-location" autocomplete="off">
           <button type="submit" class="absolute z-10 p-2 left-[4px] -top-[4px]">
             <img src="./images/icons/map.svg" alt="Map Icon" width="30" height="30">
+          </button>
+          <button type="button" id="clearSearchLocationButton" class="absolute p-2 top-[2px] right-2 z-10 hidden">
+            <img src="./images/icons/close.svg" alt="Clear Button" width="30" height="30">
           </button>
         </form>
       </div>
