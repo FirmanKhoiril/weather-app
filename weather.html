@@ -23,53 +23,56 @@
     </script>
 </head>
 <body class="bg-primary text-white">
-    <main class="flex py-16 container gap-14 h-full mx-auto flex-col">
+
+    <main class="flex py-16 container gap-10 h-full mx-auto flex-col">
       <div class="w-full flex justify-between items-center gap-8">
         <div>
-          <h1 class="text-5xl font-bold">
+          <h1 class="text-6xl font-bold">
             Weather, <br />
             Forecast & Alerts
           </h1>
-          <p class="mt-3 text-base text-white/90">
+          <p class="mt-3 text-lg text-white/90">
             Stay on top of weather conditions, forecasts,<br/> 
             personalized alerts, and detailed insights for your location. 
           </p>
         </div>
-        <div class="flex flex-col gap-2 p-8 shadow-lg relative bg-white/20 rounded-lg justify-center">
-          <img src="./images/icons/partly-cloudy-day.svg" alt="partly-cloudy-day" class="absolute -top-24 -right-20 drop-shadow-md" height="250" width="250">
-          <div class="absolute top-3 left-[33px] border border-white rounded-full flex items-center gap-2 pl-1 pr-4">
-            <img src="./images/icons/down.svg" alt="dropdown icon" width="30" height="30">
-            <p>Semarang</p>
+        <div class="flex flex-col gap-2 p-6 shadow-lg relative bg-white/20 rounded-lg justify-center">
+          <img src="./images/icons/partly-cloudy-day.svg" alt="partly-cloudy-day" class="absolute -top-24 -right-[70px] drop-shadow-md" height="250" width="250">
+          <select class="absolute top-2 left-[28px] border bg-transparent border-white outline-none cursor-pointer focus:border-white rounded-full flex items-center gap-2 pl-5 pr-8 max-h-[40px] h-full">
+            <option value="Semarang" class="bg-white checked:bg-[#5BBCE4] text-black">Semarang</option>
+            <option value="Jakarta" class="bg-white checked:bg-[#5BBCE4] text-black">Jakarta</option>
+            <option value="Makassar" class="bg-white checked:bg-[#5BBCE4] text-black">Makassar</option>
+            <option value="Bandung" class="bg-white checked:bg-[#5BBCE4] text-black">Bandung</option>
+          </select>
+          <div class="flex flex-col pt-4">
+            <div class="flex items-center">
+              <img class="ml-[-28px]" src="./images/icons/thermometer-celsius.svg" width="90" height="90" alt="Thermometer icon">
+              <h1 class="font-montserrat text-6xl">30&deg;</h1>
+            </div>
+            <p class="text-white/80 text-2xl font-montserrat">Feels like 33&deg;</p>
           </div>
-          <div class="flex items-center -ml-[34px] pt-4">
-            <img src="./images/icons/thermometer-celsius.svg" width="90" height="90" alt="Thermometer icon">
-            <h1 class="font-montserrat text-7xl">30&deg;</h1>
-          </div>
-          <p id="realTimeDate" class="font-montserrat text-white/80 text-2xl mb-1"></p>
-          <div class="flex items-center justify-between gap-3 w-full">
-            <div class="flex flex-col bg-white/20 text-white/90 p-2.5 items-center rounded-lg">
+        
+          <p id="realTimeDate" class="font-montserrat text-white/80 text-lg mb-1"></p>
+        
+          <div class="flex items-center min-w-[350px] justify-between gap-4 w-full">
+            <div class="flex flex-col w-[33%] bg-white/20 text-white/90 p-2.5 items-center rounded-lg">
               <img src="./images/icons/umbrella.svg" alt="humidity icon" width="50" height="50">
               <p class="font-montserrat">30%</p>
-              <h2 class="text-[17px]">
-                 Precipitation
-              </h2>
+              <h2 class="text-sm">Precipitation</h2>
             </div>
-            <div class="flex flex-col bg-white/20 text-white/90 p-2.5 items-center rounded-lg">
+            <div class="flex flex-col w-[33%] bg-white/20 text-white/90 p-2.5 items-center rounded-lg">
               <img src="./images/icons/humidity.svg" alt="humidity icon" width="50" height="50">
               <p class="font-montserrat">68%</p>
-              <h2 class="text-[17px]">
-                 Humidity
-              </h2>
+              <h2 class="text-sm">Humidity</h2>
             </div>
-            <div class="flex flex-col bg-white/20 text-white/90 p-2.5 items-center rounded-lg">
-              <img src="./images/icons/wind.svg" alt="humidity icon" width="50" height="50">
+            <div class="flex flex-col w-[33%] bg-white/20 text-white/90 p-2.5 items-center rounded-lg">
+              <img src="./images/icons/wind.svg" alt="wind speed icon" width="50" height="50">
               <p class="font-montserrat">12km/h</p>
-              <h2 class="text-[17px]">
-                 Wind Speed
-              </h2>
+              <h2 class="text-sm">Wind Speed</h2>
             </div>
           </div>
         </div>
+        
       </div>
       <div class="flex justify-center items-center">
         <form class="relative w-[500px]">

@@ -11,7 +11,7 @@ function getCurrentDate() {
         day: 'numeric' 
     };
 
-    return date.toLocaleDateString('id-ID', options);
+    return date.toLocaleDateString('en-US', options);
 }
 
 realTimeDate.innerText = getCurrentDate();
