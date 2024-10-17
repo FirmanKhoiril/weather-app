@@ -18,16 +18,10 @@
     min-height: 100dvh;
     width: 100%;
     background-color: var(--primary);
+    background: linear-gradient(to top left, var(--primary), var(--secondary));
     color: #fff;
   }
   
   .font-montserrat {
-    font-family: "Montserrat", serif;
-  }
-
-  .text-primary {
-    color: var(--primary);
-  }
-  .text-secondary {
-    color: var(--secondary);
-  }
+    font-family: 'Montserrat', sans-serif;
+}

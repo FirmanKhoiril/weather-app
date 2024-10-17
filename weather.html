@@ -9,21 +9,10 @@
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
     <title>Weather App</title>
-    <script defer>
-      tailwind.config = {
-        theme: {
-          extend: {
-            colors: {
-              primary: '#4169e1',
-              secondary: '#5BBCE4',
-            },
-          }
-        }
-      }
+    <script defer src="./tailwind.config.js">
     </script>
 </head>
-<body class="bg-primary text-white">
-
+<body>
     <main class="flex py-16 container gap-10 h-full mx-auto flex-col">
       <div class="w-full flex justify-between items-center gap-8">
         <div>
@@ -31,7 +20,7 @@
             Weather, <br />
             Forecast & Alerts
           </h1>
-          <p class="mt-3 text-lg text-white/90">
+          <p class="mt-3 text-lg text-primary-0">
             Stay on top of weather conditions, forecasts,<br/> 
             personalized alerts, and detailed insights for your location. 
           </p>
@@ -39,10 +28,10 @@
         <div class="flex flex-col gap-2 p-6 shadow-lg relative bg-white/20 rounded-lg justify-center">
           <img src="./images/icons/partly-cloudy-day.svg" alt="partly-cloudy-day" class="absolute -top-24 -right-[70px] drop-shadow-md" height="250" width="250">
           <select class="absolute top-2 left-[28px] border bg-transparent border-white outline-none cursor-pointer focus:border-white rounded-full flex items-center gap-2 pl-5 pr-8 max-h-[40px] h-full">
-            <option value="Semarang" class="bg-white checked:bg-[#5BBCE4] text-black">Semarang</option>
-            <option value="Jakarta" class="bg-white checked:bg-[#5BBCE4] text-black">Jakarta</option>
-            <option value="Makassar" class="bg-white checked:bg-[#5BBCE4] text-black">Makassar</option>
-            <option value="Bandung" class="bg-white checked:bg-[#5BBCE4] text-black">Bandung</option>
+            <option value="Semarang" class="bg-white text-black">Semarang</option>
+            <option value="Jakarta" class="bg-white text-black">Jakarta</option>
+            <option value="Makassar" class="bg-white text-black">Makassar</option>
+            <option value="Bandung" class="bg-white text-black">Bandung</option>
           </select>
           <div class="flex flex-col pt-4">
             <div class="flex items-center">
