@@ -18,7 +18,7 @@
     min-height: 100dvh;
     width: 100%;
     background-color: var(--primary);
-    background: linear-gradient(to top left, var(--primary), var(--secondary));
+    background: linear-gradient(to top left, var(--primary), 65%, var(--secondary));
     color: #fff;
   }
   
