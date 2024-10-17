@@ -1,6 +1,7 @@
 const realTimeDate = document.getElementById("realTimeDate");
 const searchInputLocation = document.getElementById("search-location");
 const clearInputBtn = document.getElementById("clearSearchLocationButton")
+const loading = document.getElementById("loading")
 
 function getCurrentDate(date) {
     const options = { 
@@ -61,6 +62,9 @@ const fetchWeather = async (location) => {
 document.getElementById("form-submit").addEventListener("submit", async function (e) {
     e.preventDefault()
     const location =  searchInputLocation.value
+    fetchWeather(location)
+    const weather = await fetchWeather("Semarang");
+    if (weather) fetchForecast(weather?.latitude, weather?.longitude);
     // to new page and display all the data
 })
 
@@ -75,33 +79,34 @@ fetchingHomePage()
 const fetchForecast = async (latitude, longitude) => {
 
     const weatherCodeIcons = {
-        0: "./images/icons/clear-day.svg",
-        1: "./images/icons/cloudy.svg",
-        2: "./images/icons/partly-cloudy-day.svg",
-        3: "./images/icons/cloudy.svg",
-        45: "./images/icons/fog.svg",
-        48: "./images/icons/fog.svg",
-        51: "./images/icons/drizzle.svg",
-        53: "./images/icons/drizzle.svg",
-        55: "./images/icons/drizzle.svg",
-        80: "./images/icons/rain.svg",
+        1: "./images/icons/clear-day.svg",             
+        2: "./images/icons/partly-cloudy-day.svg", 
+        3: "./images/icons/partly-cloudy-day.svg",        
+        45: "./images/icons/fog.svg",                
+        48: "./images/icons/fog.svg",          
+        51: "./images/icons/drizzle.svg",           
+        53: "./images/icons/drizzle.svg",               
+        55: "./images/icons/drizzle.svg",          
+        80: "./images/icons/rain.svg",                
         81: "./images/icons/partly-cloudy-day-rain.svg",
         82: "./images/icons/partly-cloudy-day-rain.svg",
-        85: "./images/icons/snow.svg",
-        85: "./images/icons/snow.svg",
+        85: "./images/icons/snow.svg",                  
         86: "./images/icons/sleet.svg",
-        95: "./images/icons/thunderstorms.svg", 
-        96: "./images/icons/thunderstorms.svg", 
-        97: "./images/icons/thunderstorms.svg", 
-        98: "./images/icons/thunderstorms.svg", 
-        99: "./images/icons/rain.svg" 
+        95: "./images/icons/thunderstorms.svg",        
+        96: "./images/icons/thunderstorms.svg",       
+        97: "./images/icons/thunderstorms.svg",       
+        99: "./images/icons/rain.svg"   
     };
     
+    loading.classList.remove("hidden");
+    loading.classList.add("flex")
     try {
         const weather = await fetch(`${baseUrlTwo}/forecast?latitude=${latitude}&longitude=${longitude}&daily=weather_code,temperature_2m_max,temperature_2m_min,sunrise,sunset,precipitation_sum,rain_sum,wind_speed_10m_max`);
         const dataJson = await weather.json();
-        console.log(dataJson);
+        console.log(dataJson);  
 
+        loading.classList.add("hidden");
+        loading.classList.remove("flex")
         const dates = dataJson.daily.time
         dates.forEach((date, index) => {
             if (index > 0) {
@@ -109,31 +114,39 @@ const fetchForecast = async (latitude, longitude) => {
                 const weatherIcon = weatherCodeIcons[weatherCode] || "./images/icons/clear-day.svg";
 
                 document.getElementById("card-container").innerHTML += `
-                    <div class="bg-white/20 rounded-lg p-2 gap-3 h-[240px] w-[200px] shadow-lg items-center flex flex-col daily-weather">
-                        <img src="${weatherIcon}" width="50" height="50" alt="Clear day">
-                        <p class="text-lg font-semibold font-montserrat">${getCurrentDate(date)}</p>
-                      
-                    </div>
-                `;
-            }
-        })
+    <div class="bg-white/20 rounded-xl p-4 gap-2 h-[300px] w-[225px] shadow-lg items-center flex flex-col daily-weather transition-all hover:shadow-xl justify-between hover:bg-white/30 relative">
+
+        <img src="${weatherIcon}" width="115" height="115" alt="Weather Icon" class="absolute top-[-50px] right-[-40px]">
+
+        <p class="text-lg font-semibold font-montserrat text-center">${getCurrentDate(date)}</p>
+
+        <div class="flex gap-4 flex-row w-full">
+            <div class="flex items-center w-1/2  justify-between bg-white/20 px-2 py-2 rounded-lg shadow-sm">
+                <div class="flex justify-center items-center gap-1 w-full flex-col">
+                    <img src="./images/icons/umbrella.svg" alt="Precipitation icon" width="45" height="45">
+                    <p class="font-semibold font-montserrat text-sm">${dataJson.daily.precipitation_sum[index]}%</p>
+                </div>
+            </div>
+            <div class="flex items-center w-1/2 justify-between bg-white/20 px-2 py-2 rounded-lg shadow-sm">
+                <div class="flex justify-center items-center w-full gap-1 flex-col">
+                    <img src="./images/icons/wind.svg" alt="Wind speed icon" width="45" height="45">
+                    <p class="font-semibold font-montserrat text-sm">${Math.floor(dataJson.daily.wind_speed_10m_max[index])} km/h</p>
+                </div>
+            </div>
+        </div>
+    </div>`
+    ;}
+})
     } catch (error) {
         console.log(error);
+        loading.classList.add("hidden");
+        loading.classList.remove("flex")
+    } finally {
+        loading.classList.add("hidden");
+        loading.classList.remove("flex")
     }
 }
 
 fetchForecast()
 
 
-// <div class="flex gap-2 items-center justify-center flex-wrap">
-// <div class="w-[170px] relative bg-white/20 flex items-center gap-1 p-2 rounded-lg">
-//     <img src="./images/icons/umbrella.svg" alt="humidity icon" width="40" height="40" class="absolute top-[-2px] left-[-2px]">
-//     <p class="font-montserrat pl-7">${dataJson.daily.precipitation_sum[index]}%</p>
-// </div>  
-// <div class="w-[80px] bg-white/20 p-2 rounded-lg">
-// ${dataJson.daily.precipitation_sum[index]}
-// </div>
-// <div class="w-[80px] bg-white/20 p-2 rounded-lg">
-// ${dataJson.daily.wind_speed_10m_max[index]}
-// </div>
-// </div>
