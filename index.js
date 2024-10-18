@@ -1,4 +1,3 @@
-const realTimeDate = document.getElementById("realTimeDate");
 const searchInputLocation = document.getElementById("search-location");
 const clearInputBtn = document.getElementById("clearSearchLocationButton")
 const loading = document.getElementById("loading")
@@ -12,17 +11,16 @@ function getCurrentDate(date) {
     };
     if (date !== "") {
         const dates = new Date(date);
-
-        const dayName = dates.toLocaleDateString('en-US', { weekday: 'long' });
-
-        return dayName;   
+        const day = dates.toLocaleDateString("en-US", { weekday: "long" });
+        const month = dates.toLocaleDateString("en-US", { month: "long" });
+        const dayNumber = dates.toLocaleDateString("en-US", { day: "numeric" });
+        const year = dates.toLocaleDateString("en-US", { year: "numeric" });  
+        return `${day} <br />${month}, ${dayNumber}, ${year}`
     }
     const dates = new Date();
     const formatEn = dates.toLocaleDateString('en-US', options);
     return formatEn;
 }
-
-realTimeDate.innerText = getCurrentDate("")
 
 function showClearButton() {
     if (searchInputLocation.value.length !== 0) {
@@ -101,7 +99,7 @@ const fetchForecast = async (latitude, longitude) => {
     loading.classList.remove("hidden");
     loading.classList.add("flex")
     try {
-        const weather = await fetch(`${baseUrlTwo}/forecast?latitude=${latitude}&longitude=${longitude}&daily=weather_code,temperature_2m_max,temperature_2m_min,sunrise,sunset,precipitation_sum,rain_sum,wind_speed_10m_max`);
+        const weather = await fetch(`${baseUrlTwo}/forecast?latitude=${latitude}&longitude=${longitude}&forecast_days=11&daily=weather_code,temperature_2m_max,temperature_2m_min,sunrise,sunset,precipitation_sum,rain_sum,wind_speed_10m_max&current=temperature_2m,apparent_temperature,relative_humidity_2m,precipitation,rain,weather_code,wind_speed_10m&`);
         const dataJson = await weather.json();
         console.log(dataJson);  
 
@@ -109,38 +107,86 @@ const fetchForecast = async (latitude, longitude) => {
         loading.classList.remove("flex")
         const dates = dataJson.daily.time
         dates.forEach((date, index) => {
-            if (index > 0) {
+            if(index > 0) {
                 const weatherCode = dataJson.daily.weather_code[index];
                 const weatherIcon = weatherCodeIcons[weatherCode] || "./images/icons/clear-day.svg";
 
                 document.getElementById("card-container").innerHTML += `
-    <div class="bg-white/20 rounded-xl p-4 gap-2 h-[300px] w-[225px] shadow-lg items-center flex flex-col daily-weather transition-all hover:shadow-xl justify-between hover:bg-white/30 relative">
+        <div class="bg-gradient-to-tl from-[#4169e1] to-[#5BBCE4] rounded-xl p-4 gap-2 h-[300px] w-[265px] shadow-lg items-center flex flex-col daily-weather transition-all hover:shadow-xl justify-between hover:backdrop-brightness-105 relative">
 
-        <img src="${weatherIcon}" width="115" height="115" alt="Weather Icon" class="absolute top-[-50px] right-[-40px]">
+        
+        <p class="text-base font-[500] font-montserrat text-center">${getCurrentDate(date)}</p>
 
-        <p class="text-lg font-semibold font-montserrat text-center">${getCurrentDate(date)}</p>
+        <img src="${weatherIcon}" width="90" height="90" alt="Weather Icon" class="">
 
-        <div class="flex gap-4 flex-row w-full">
-            <div class="flex items-center w-1/2  justify-between bg-white/20 px-2 py-2 rounded-lg shadow-sm">
-                <div class="flex justify-center items-center gap-1 w-full flex-col">
-                    <img src="./images/icons/umbrella.svg" alt="Precipitation icon" width="45" height="45">
-                    <p class="font-semibold font-montserrat text-sm">${dataJson.daily.precipitation_sum[index]}%</p>
+            <div class="flex flex-col items-center gap-2 w-full">
+                <div class="flex items-center">
+                    <p class="font-montserrat">Min: ${dataJson.daily.temperature_2m_min[index] + "&deg;"} |</p>
+                    <p class="font-montserrat ml-1">Max: ${dataJson.daily.temperature_2m_max[index] + "&deg;"}</p>           
+                </div>
+            <div class="flex gap-4 flex-row w-full">
+                <div class="flex items-center w-1/2  justify-between bg-white/20 px-2 py-2 rounded-lg shadow-sm">
+                    <div class="flex justify-center items-center gap-1 w-full flex-col">
+                        <img src="./images/icons/umbrella.svg" alt="Precipitation icon" width="45" height="45">
+                        <p class="font-semibold font-montserrat text-sm">${dataJson.daily.precipitation_sum[index]}%</p>
+                    </div>
+                </div>
+                <div class="flex items-center w-1/2 justify-between bg-white/20 px-2 py-2 rounded-lg shadow-sm">
+                    <div class="flex justify-center items-center w-full gap-1 flex-col">
+                        <img src="./images/icons/wind.svg" alt="Wind speed icon" width="45" height="45">
+                        <p class="font-semibold font-montserrat text-sm">${Math.floor(dataJson.daily.wind_speed_10m_max[index])} km/h</p>
+                    </div>
                 </div>
             </div>
-            <div class="flex items-center w-1/2 justify-between bg-white/20 px-2 py-2 rounded-lg shadow-sm">
-                <div class="flex justify-center items-center w-full gap-1 flex-col">
-                    <img src="./images/icons/wind.svg" alt="Wind speed icon" width="45" height="45">
-                    <p class="font-semibold font-montserrat text-sm">${Math.floor(dataJson.daily.wind_speed_10m_max[index])} km/h</p>
-                </div>
             </div>
-        </div>
-    </div>`
+        </div>`
+        } else {
+            const weatherCode = dataJson.daily.weather_code[index];
+            const weatherIcon = weatherCodeIcons[weatherCode] || "./images/icons/clear-day.svg";
+            document.getElementById("big-card").innerHTML += `
+            <div class="w-full h-full">
+            <img src="${weatherIcon}" alt="partly-cloudy-day" class="absolute -top-24 -right-[70px] drop-shadow-md" height="250" width="250">
+            <p class="font-montserrat text-white text-lg mb-1">${getCurrentDate("")}</p>
+          <div class="flex flex-col">
+            <div class="flex items-center">
+              <img class="ml-[-28px]" src="./images/icons/thermometer-celsius.svg" width="100" height="100" alt="Thermometer icon">
+              <h1 class="font-montserrat text-7xl font-bold">${Math.floor(dataJson.current.apparent_temperature) + "&deg;"}</h1>
+            </div>
+            
+          </div>
+          <div class="flex items-center my-1">
+                    <p class="text-white/80 font-montserrat">Feels like ${Math.floor(dataJson.current.temperature_2m
+                    ) + "&deg;"} |</p>
+                    <p class="font-montserrat ml-1">Min: ${dataJson.daily.temperature_2m_min[index] + "&deg;"} |</p>
+                    <p class="font-montserrat ml-1">Max: ${dataJson.daily.temperature_2m_max[index] + "&deg;"}</p>           
+            </div>
+
+          
+        
+          <div class="flex items-center min-w-[350px] justify-between gap-4 w-full">
+            <div class="flex flex-col w-[33%] bg-white/20 text-white/90 p-2.5 items-center rounded-lg">
+              <img src="./images/icons/umbrella.svg" alt="humidity icon" width="50" height="50">
+              <p class="font-montserrat">${dataJson.current.precipitation}%</p>
+              <h2 class="text-sm">Precipitation</h2>
+            </div>
+            <div class="flex flex-col w-[33%] bg-white/20 text-white/90 p-2.5 items-center rounded-lg">
+              <img src="./images/icons/humidity.svg" alt="humidity icon" width="50" height="50">
+              <p class="font-montserrat">${dataJson.current.relative_humidity_2m}%</p>
+              <h2 class="text-sm">Humidity</h2>
+            </div>
+            <div class="flex flex-col w-[33%] bg-white/20 text-white/90 p-2.5 items-center rounded-lg">
+              <img src="./images/icons/wind.svg" alt="wind speed icon" width="50" height="50">
+              <p class="font-montserrat">${dataJson.current.wind_speed_10m}km/h</p>
+              <h2 class="text-sm">Wind Speed</h2>
+            </div>
+          </div>
+          </div>
+            `
+        }  
     ;}
-})
+)
     } catch (error) {
         console.log(error);
-        loading.classList.add("hidden");
-        loading.classList.remove("flex")
     } finally {
         loading.classList.add("hidden");
         loading.classList.remove("flex")
