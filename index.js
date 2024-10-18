@@ -59,10 +59,10 @@ const fetchWeather = async (location) => {
 
 document.getElementById("form-submit").addEventListener("submit", async function (e) {
     e.preventDefault()
-    const location =  searchInputLocation.value
-    fetchWeather(location)
-    const weather = await fetchWeather("Semarang");
-    if (weather) fetchForecast(weather?.latitude, weather?.longitude);
+    // const location =  searchInputLocation.value
+    // fetchWeather(location)
+    // const weather = await fetchWeather("Semarang");
+    // if (weather) fetchForecast(weather?.latitude, weather?.longitude);
     // to new page and display all the data
 })
 
@@ -75,7 +75,7 @@ const fetchingHomePage = async () => {
 fetchingHomePage()
 
 const fetchForecast = async (latitude, longitude) => {
-
+    let loadingBigCard = false
     const weatherCodeIcons = {
         1: "./images/icons/clear-day.svg",             
         2: "./images/icons/partly-cloudy-day.svg", 
@@ -97,14 +97,16 @@ const fetchForecast = async (latitude, longitude) => {
     };
     
     loading.classList.remove("hidden");
+    loadingBigCard = true
     loading.classList.add("flex")
     try {
         const weather = await fetch(`${baseUrlTwo}/forecast?latitude=${latitude}&longitude=${longitude}&forecast_days=11&daily=weather_code,temperature_2m_max,temperature_2m_min,sunrise,sunset,precipitation_sum,rain_sum,wind_speed_10m_max&current=temperature_2m,apparent_temperature,relative_humidity_2m,precipitation,rain,weather_code,wind_speed_10m&`);
-        const dataJson = await weather.json();
-        console.log(dataJson);  
+        const dataJson = await weather.json(); 
 
         loading.classList.add("hidden");
         loading.classList.remove("flex")
+        loadingBigCard = false
+        
         const dates = dataJson.daily.time
         dates.forEach((date, index) => {
             if(index > 0) {
@@ -146,24 +148,27 @@ const fetchForecast = async (latitude, longitude) => {
             document.getElementById("big-card").innerHTML += `
             <div class="w-full h-full">
             <img src="${weatherIcon}" alt="partly-cloudy-day" class="absolute -top-24 -right-[70px] drop-shadow-md" height="250" width="250">
-            <p class="font-montserrat text-white text-lg mb-1">${getCurrentDate("")}</p>
-          <div class="flex flex-col">
-            <div class="flex items-center">
-              <img class="ml-[-28px]" src="./images/icons/thermometer-celsius.svg" width="100" height="100" alt="Thermometer icon">
-              <h1 class="font-montserrat text-7xl font-bold">${Math.floor(dataJson.current.apparent_temperature) + "&deg;"}</h1>
+            <div class="flex items-center gap-2">
+                <img src="./images/icons/location.svg" width="30" height="30" alt="location icons" />
+                <p class="text-3xl mb-1">Semarang</p>
             </div>
-            
-          </div>
-          <div class="flex items-center my-1">
-                    <p class="text-white/80 font-montserrat">Feels like ${Math.floor(dataJson.current.temperature_2m
+            <div class="flex flex-col">
+                <div class="flex items-center">
+                    <img class="ml-[-28px]" src="./images/icons/thermometer-celsius.svg" width="100" height="100" alt="Thermometer icon">
+                    <h1 class="font-montserrat text-7xl font-bold">${Math.floor(dataJson.current.apparent_temperature) + "&deg;"}</h1>
+                </div>
+            </div>
+            <p class="font-montserrat text-white text-lg mb-2">${getCurrentDate("")}</p>
+            <div class="flex items-center my-1">
+                <p class="font-montserrat">Feels like ${Math.floor(dataJson.current.temperature_2m
                     ) + "&deg;"} |</p>
-                    <p class="font-montserrat ml-1">Min: ${dataJson.daily.temperature_2m_min[index] + "&deg;"} |</p>
-                    <p class="font-montserrat ml-1">Max: ${dataJson.daily.temperature_2m_max[index] + "&deg;"}</p>           
+                <p class="font-montserrat ml-1">Min: ${dataJson.daily.temperature_2m_min[index] + "&deg;"} |</p>
+                <p class="font-montserrat ml-1">Max: ${dataJson.daily.temperature_2m_max[index] + "&deg;"}</p>           
             </div>
 
           
         
-          <div class="flex items-center min-w-[350px] justify-between gap-4 w-full">
+            <div class="flex items-center min-w-[350px] mt-2 justify-between gap-4 w-full">
             <div class="flex flex-col w-[33%] bg-white/20 text-white/90 p-2.5 items-center rounded-lg">
               <img src="./images/icons/umbrella.svg" alt="humidity icon" width="50" height="50">
               <p class="font-montserrat">${dataJson.current.precipitation}%</p>
