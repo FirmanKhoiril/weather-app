@@ -17,8 +17,7 @@
   body {
     min-height: 100dvh;
     width: 100%;
-    background-color: var(--primary);
-    background: linear-gradient(to top left, var(--primary), 65%, var(--secondary));
+    background-color: rgb(96, 144, 222);
     color: #fff;
     overflow-x: hidden;
   }
@@ -35,9 +34,9 @@
     radial-gradient(farthest-side,#fff 94%,#0000) top/8px 8px no-repeat,
     conic-gradient(#0000 30%,#fff);
   -webkit-mask: radial-gradient(farthest-side,#0000 calc(100% - 8px),#000 0);
-  animation:s3 1s infinite linear;
+  animation:rotation 1s infinite linear;
 }
 
-@keyframes s3{ 
+@keyframes rotation{ 
   100%{transform: rotate(1turn)}
 }

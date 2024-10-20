@@ -52,37 +52,22 @@
           <!-- All card forecast is here -->
         </div>
       </div>
-      
     </main>
 
     
-    <main class="flex py-14 gap-7 h-full w-full">
-      
-      <div  id="container-search-detail" class="flex items-center gap-4">
-        <div class="w-[320px] p-6 h-screen flex flex-col  rounded-tr-2xl rounded-br-2xl drop-shadow-md bg-gradient-to-tl from-[#4169e1] to-[#5BBCE4]">
-          <div class="flex items-center gap-8">
-            <button type="button" id="btn-back-homepage" class=" h-[40px] w-[40px] rounded-full flex justify-center items-center bg-white/20 hover:bg-white/30 drop-shadow-lg" onclick="backToHomepage()">
-              <img src="./images/icons/back.svg" alt="Back Icon">
-            </button>
-            <p class="text-2xl uppercase">Semarang</p>
-          </div>
-          <div class="flex items-center mt-4 justify-center w-full">
-            <img src="./images/icons/clear-day.svg" alt="Clear Day" width="200" height="200">
-          </div>
-        </div>
-        <div class=""></div>
-      </div>
-      
-    </main>
-    <main id="search-weather-detail" class="hidden relative py-14 container gap-7 h-full mx-auto flex-col">
-      <button type="button" id="btn-back-homepage" class=" h-[50px] w-[50px] rounded-full hidden justify-center items-center bg-white/20 hover:bg-white/30 drop-shadow-md" onclick="backToHomepage()">
+    
+    <main  class="flex gap-7 h-full overflow-y-hidden relative w-full">
+      <button type="button" id="btn-back-homepage" class=" h-[40px] w-[40px] rounded-full flex justify-center items-center bg-white/20 hover:bg-white/30 drop-shadow-lg absolute top-6 z-10 left-6" onclick="backToHomepage()">
         <img src="./images/icons/back.svg" alt="Back Icon">
       </button>
-      <div id="container-search-detail" >
-
+      <div id="container-search-detail" class="h-full w-full flex items-center">
+        <!-- Dashboard Section here -->
       </div>
+      
     </main>
     <script src="weatherCode.js"></script>
+    <script src="uvIndex.js"></script>
+    <script src="windDirection.js"></script>
     <script src="index.js"></script>
 </body>
 </html>
