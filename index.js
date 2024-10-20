@@ -110,11 +110,10 @@ const fetchSearchDetailByCity = async (latitude, longitude, cityName) => {
                 containerSearchDetail.innerHTML += `<div class="flex w-full items-start gap-6">
               <div class="w-[320px] lg:w-[400px] py-6 px-8 h-[calc(100dvh)] flex flex-col rounded-2xl drop-shadow-md bg-gradient-to-tl from-[#4169e1] to-[#5BBCE4] ">
                 <div class="flex items-center gap-8 ">
-                 
                   <p class="text-2xl ml-12 uppercase">${cityName === "Batavia" ? "Jakarta" : cityName}</p>
                 </div>
                 <div class="flex items-center mt-4 justify-center w-full">
-                  <img src="./images/icons/clear-day.svg" alt="Clear Day" width="180" height="180">
+                  <img src="${weatherIcon.image}" alt="${weatherIcon.name}" width="180" height="180">
                 </div>
                 <div class="flex flex-col gap-4">
                   <h2 class="font-montserrat text-8xl">12&deg;</h2>
@@ -242,7 +241,7 @@ const fetchForecast = async (latitude, longitude) => {
 
         <p class="text-base font-[500] font-montserrat text-center">${getCurrentDate(date)}</p>
 
-        <img src="${weatherIcon.image}" width="90" height="90" alt="Weather Icon" class="mt-[-35px]">
+        <img src="${weatherIcon.image}" width="90" height="90" alt="${weatherIcon.name}" class="mt-[-35px]">
         <p class="absolute top-[148px] text-sm">${weatherIcon.name}</p>        
             <div class="flex flex-col items-center gap-2 w-full">
                 <div class="flex items-center">
@@ -271,7 +270,7 @@ const fetchForecast = async (latitude, longitude) => {
 
             document.getElementById("big-card").innerHTML += `
             <div class="w-full h-full">
-            <img src="${weatherIcon.image}" alt="partly-cloudy-day" class="absolute -top-24 -right-[70px] drop-shadow-md" height="250" width="250">  
+            <img src="${weatherIcon.image}" alt="${weatherIcon.name}" class="absolute -top-24 -right-[70px] drop-shadow-md" height="250" width="250">  
             <p class="font-montserrat text-white text-base mb-2">${getCurrentDate("")}</p>
             
             <div class="flex flex-col">
