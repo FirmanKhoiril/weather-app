@@ -69,7 +69,6 @@ document.getElementById("form-submit").addEventListener("submit", async function
     loading.classList.remove("hidden");
     home.classList.remove('flex');
     home.classList.add('hidden');
-    searchInputLocation.value = '';
     
     if (weather) fetchSearchDetailByCity(weather?.latitude, weather?.longitude, weather?.name);
     // to new page and display all the data
@@ -95,12 +94,13 @@ const fetchSearchDetailByCity = async (latitude, longitude, cityName) => {
         const dataJson = await weather.json(); 
         const dates = dataJson.daily.time
         console.log(dataJson);
-        
+
+        searchInputLocation.value = '';
         loading.classList.add("hidden");
         loading.classList.remove("flex")
         btnBackHomepage.classList.add("flex")
         btnBackHomepage.classList.remove("hidden")
-        
+        clearInputBtn.style.display = "none";
         containerSearchDetail.innerHTML = '';
 
         function getUvIndexData(dataJson) {
@@ -392,7 +392,9 @@ fetchForecast()
 
 function backToHomepage() {
     home.classList.add('flex');
+    searchInputLocation.value = ""
     home.classList.remove('hidden');
+    containerSearchDetail.innerHTML = '';
 }
 
 
