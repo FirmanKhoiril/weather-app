@@ -103,103 +103,172 @@ const fetchSearchDetailByCity = async (latitude, longitude, cityName) => {
         
         containerSearchDetail.innerHTML = '';
 
+        function getUvIndexData(dataJson) {
+          const uvIndexMax = dataJson.daily.uv_index_max[0];
+          const roundedUv = Math.floor(uvIndexMax);
+    
+          if (uvIndex[roundedUv]) {
+            return { image: uvIndex[roundedUv].image, name: uvIndex[roundedUv].name };
+        }
+          return { image: './images/icons/uv-index.svg', name: 'Very Low' };
+      }
+
+      function equationWindDirection(degree) {
+        const direction = Object.keys(windDirection).map(Number)
+        const closestDirection = direction.reduce((prev, curr) => 
+          Math.abs(curr - degree) < Math.abs(prev - degree) ? curr : prev
+      );
+      return windDirection[closestDirection].name;
+      }
+
+      function getSunriseTime(date) {
+        const dates = new Date(date);
+        const time = dates.toLocaleTimeString("en-US", { hour: '2-digit', minute: '2-digit' });
+        return `<span class="font-montserrat">${time}</span>`
+      }
+      function getSunsetTime(date) {
+        const dates = new Date(date);
+        const time = dates.toLocaleTimeString("en-US", { hour: '2-digit', minute: '2-digit' });
+        return `<span class="font-montserrat">${time}</span>`
+      }
+
+      function getDayTimes(date) {
+        const dates = new Date(date);
+        const day = dates.toLocaleDateString("en-US", { weekday: "long" });
+        const time = dates.toLocaleTimeString("en-US", { hour: '2-digit', minute: '2-digit' });
+        return `${day}, <span class="font-montserrat">${time}</span>` 
+      }
+      function getDayOnly(date) {
+        const dates = new Date(date);
+        const day = dates.toLocaleDateString("en-US", { weekday: "long" });
+        return day.substring(0, 3) 
+      }
+      const uvData = getUvIndexData(dataJson);
+
+      const loopCardData = () => {
+        return dates
+          .map((date, i) => {
+            if (i > 0 && i <= 7) { 
+              const weatherCode = dataJson.daily.weather_code[i];
+              const weatherIcon = weatherCodeIcons[weatherCode]
+              return `
+                <div class="bg-gradient-to-tl from-[#4169e1] to-[#5BBCE4] justify-around drop-shadow-md rounded-lg flex flex-col items-center py-2 w-[110px] 2xl:w-[130px] h-[140px] hover:scale-[1.01]">
+                  <h2 class="text-lg">${getDayOnly(date)}</h2>
+                  <img src="${weatherIcon.image}" alt="${weatherIcon.name}" width="40" height="40">
+                  <p class="font-montserrat">${dataJson.daily.temperature_2m_max[i]}&deg; <span class="font-montserrat ml-1 text-white/70">${dataJson.daily.temperature_2m_min[i]}&deg;</span></p>
+                </div>
+              `;
+            }
+          })
+          .join('');
+    };
+      
+
         dates.forEach((date, i) => {
             if(i === 0) {
                 const weatherCode = dataJson.daily.weather_code[i];
                 const weatherIcon = weatherCodeIcons[weatherCode];
+
                 containerSearchDetail.innerHTML += `<div class="flex w-full items-start gap-6">
-              <div class="w-[320px] lg:w-[400px] py-6 px-8 h-[calc(100dvh)] flex flex-col rounded-2xl drop-shadow-md bg-gradient-to-tl from-[#4169e1] to-[#5BBCE4] ">
-                <div class="flex items-center gap-8 ">
+              <div class="w-[320px] lg:w-[400px] py-6 px-8 h-[calc(100dvh)] flex flex-col rounded-br-2xl rounded-tr-2xl drop-shadow-md bg-gradient-to-tl from-[#4169e1] to-[#5BBCE4] ">
+                <div class="flex items-center gap-4 2xl:gap-8 ">
                   <p class="text-2xl ml-12 uppercase">${cityName === "Batavia" ? "Jakarta" : cityName}</p>
                 </div>
                 <div class="flex items-center mt-4 justify-center w-full">
                   <img src="${weatherIcon.image}" alt="${weatherIcon.name}" width="180" height="180">
                 </div>
                 <div class="flex flex-col gap-4">
-                  <h2 class="font-montserrat text-8xl">12&deg;</h2>
-                  <p class="text-lg">Monday, <span class="font-montserrat">16:00</span></p>
+                  <h2 class="font-montserrat text-8xl">${Math.floor(dataJson.current.temperature_2m)}&deg;</h2>
+                  <p class="text-lg">${getDayTimes(date)} </p>
                 </div>
                 <hr class="border-white/20 my-8" />
                 <div class="flex flex-col items-start gap-6">
                   <div class="flex text-white/90 items-center rounded-lg">
                     <img src="./images/icons/cld.svg" alt="humidity icon" class=" mr-3.5" width="28" height="28">
-                    <h2 class="text-lg">Mostly Cloud</h2>
+                    <h2 class="text-lg">${weatherIcon.name}</h2>
                   </div>
                   <div class="flex text-white/90 items-center rounded-lg">
-                    <img src="./images/icons/cloud-rain.svg" alt="humidity icon" class=" mr-3.5" width="28" height="28">
-                    <h2 class="text-lg">Rain&nbsp;</h2>
-                    <p class="font-montserrat">- 30%</p>
+                    <img src="${dataJson.current.is_day === 1 ? "./images/icons/clear-day.svg" : "./images/icons/clear-night.svg"}" alt="humidity icon" class=" mr-3.5" width="28" height="28">
+                    <h2 class="text-lg">${dataJson.current.is_day === 1 ? "Morning" : "Night"}</h2>
                   </div>
                 </div>
               </div>
-              <div class="flex flex-col px-4 overflow-hidden max-h-full gap-4 w-full justify-between">
-                <div class="max-h-[400px] h-full w-full py-6 flex flex-col gap-6">
+
+              <div class="flex flex-col 2xl:px-4 overflow-hidden max-h-full gap-4 w-full justify-between">
+                <div class="max-h-[340px] 2xl:max-h-[400px] h-full w-full py-3 2xl:py-6 flex flex-col gap-6">
                   <h2 class="font-semibold pb-2 border-b border-white text-2xl max-w-[65px]">Week</h2>
                   <div class="flex items-center pt-4 w-full justify-between pr-10">
-                    <div class="bg-gradient-to-tl from-[#4169e1] to-[#5BBCE4] justify-around drop-shadow-md rounded-lg flex flex-col items-center py-2 w-[120px] h-[140px] hover:scale-[1.01]">
-                      <h2>Sun</h2>
-                      <img src="./images/icons/clear-day.svg" alt="Clear Day" width="40" height="40">
-                      <p class="font-montserrat">12&deg; <span class="font-montserrat ml-1 text-white/70">7&deg;</span></p>
-                    </div>
+                  ${loopCardData()}
                   </div>
                 </div>
-                <div class="h-full w-full py-4 mt-2 flex-col flex gap-10 pr-10">
+                <div class="h-full w-full py-4 -mt-4 xl:mt-2 flex-col flex gap-6 pr-10">
                   <h2 class="text-2xl font-semibold">Today Highlights</h2>
-                  <div class="grid grid-cols-3 grid-rows-[repeat(2,_max-content)] h-full justify-between gap-10 w-full">
-                    <div class="bg-gradient-to-tl from-[#4169e1] to-[#5BBCE4] px-8 py-6 drop-shadow-md hover:scale-[1.01] rounded-lg flex flex-col max-h-[210px] h-full w-full max-w-[420px]">
+                  <div class="grid grid-cols-3 2xl:pt-2 grid-rows-[repeat(2,_max-content)] h-full justify-between gap-10 w-full">
+                    <div class="bg-gradient-to-tl from-[#4169e1] to-[#5BBCE4] px-4 py-2 2xl:px-8 2xl:py-6 drop-shadow-md hover:scale-[1.01] rounded-lg flex flex-col max-h-[190px] 2xl:max-h-[210px] h-full w-full 2xl:max-w-[420px] max-w-[400px]">
                       <h2 class="text-lg text-white/80">UV Index</h2>
                       <div class="w-full justify-center flex items-center flex-col">
-                        <img src="./images/icons/uv-index-9.svg" width="100" height="100" alt="UV Index 9">
-                        <h2 class="text-lg">Very High</h2>
+                        <img src="${uvData.image}" width="100" height="100" alt="${uvData.name}">
+                        <h2 class="text-lg">${uvData.name}</h2>
                       </div>
                     </div>
-                    <div class="bg-gradient-to-tl from-[#4169e1] to-[#5BBCE4] px-8 py-6 drop-shadow-md hover:scale-[1.01] rounded-lg flex flex-col max-h-[210px] h-full w-full max-w-[420px]">
+                    <div class="bg-gradient-to-tl from-[#4169e1] to-[#5BBCE4] px-4 py-2 2xl:px-8 2xl:py-6 drop-shadow-md hover:scale-[1.01] rounded-lg flex flex-col max-h-[190px] 2xl:max-h-[210px] h-full w-full 2xl:max-w-[420px] max-w-[400px]">
                       <h2 class="text-lg text-white/80">Wind Speed</h2>
                       <div class="w-full justify-center flex gap-2 items-center h-full">
-                        <h2 class="text-6xl font-montserrat">7.7 <span class="text-base -ml-[12px]">km/h</span></h2>
+                        <h2 class="text-6xl font-montserrat">${dataJson.current.wind_speed_10m
+                        } <span class="text-base -ml-[12px]">km/h</span></h2>
                       </div>
                     </div>
-                    <div class="bg-gradient-to-tl from-[#4169e1] to-[#5BBCE4] px-8 py-6 drop-shadow-md hover:scale-[1.01] rounded-lg flex flex-col max-h-[210px] h-full w-full max-w-[420px]">
+                    <div class="bg-gradient-to-tl from-[#4169e1] to-[#5BBCE4] px-4 py-2 2xl:px-8 2xl:py-6 drop-shadow-md hover:scale-[1.01] rounded-lg flex flex-col max-h-[190px] 2xl:max-h-[210px] h-full w-full 2xl:max-w-[420px] max-w-[400px]">
                       <h2 class="text-lg text-white/80">Humidity</h2>
                       <div class="flex flex-col gap-3 justify-center pt-6 items-center">
                         <div class="w-full justify-center flex gap-2 items-center h-full">
-                          <h2 class="text-6xl font-montserrat">12</h2>
+                          <h2 class="text-6xl font-montserrat">${dataJson.current.relative_humidity_2m}</h2>
                           <span class="text-2xl mb-6">%</span>
                         </div>
-                        <p class="text-xl">Normal👍</p>
+                        <p class="text-xl">
+                          ${dataJson.current.relative_humidity_2m >= 75 ? "Very High 😨" 
+                          : dataJson.current.relative_humidity_2m >= 50 ? "High 😐" 
+                          : dataJson.current.relative_humidity_2m >= 30 ? "Moderate 😊👌" 
+                          : "Low 😌"}
+                        </p>
                       </div>
                     </div>
-                    <div class="bg-gradient-to-tl from-[#4169e1] to-[#5BBCE4] px-8 py-6 drop-shadow-md hover:scale-[1.01] rounded-lg flex flex-col max-h-[210px] h-full w-full gap-4 max-w-[420px]">
+                    <div class="bg-gradient-to-tl from-[#4169e1] to-[#5BBCE4] px-4 py-2 2xl:px-8 2xl:py-6 drop-shadow-md hover:scale-[1.01] rounded-lg flex flex-col max-h-[190px] 2xl:max-h-[210px] h-full w-full 2xl:max-w-[420px] gap-4 max-w-[400px]">
                       <h2 class="text-lg text-white/80">Sunrise & Sunset</h2>
                       <div class="flex items-center flex-col gap-4">
                         <div class="flex items-center gap-2">
                           <img src="./images/icons/sunrise.svg" width="40" height="40"  alt="Sunrise icon">
                           <div class="">
-                            <h2 class="font-montserrat">6:35 AM</h2>
+                            <h2 class="font-montserrat">${getSunriseTime(dataJson.daily.sunrise[0])}</h2>
                             <p class="font-montserrat text-white/70 text-sm">- 1m 46s</p>
                           </div>
                         </div>
                         <div class="flex items-center gap-2">
                           <img src="./images/icons/sunset.svg"  width="40" height="40" alt="Sunset icon">
                           <div class="">
-                            <h2 class="font-montserrat">5:35 PM</h2>
+                            <h2 class="font-montserrat">${getSunsetTime(dataJson.daily.sunset[0])}</h2>
                             <p class="font-montserrat text-white/70 text-sm">+ 2m 24s</p>
                           </div>
                         </div>
                       </div>
                     </div>
-                    <div class="bg-gradient-to-tl from-[#4169e1] to-[#5BBCE4] px-8 py-6 drop-shadow-md hover:scale-[1.01] rounded-lg flex flex-col max-h-[210px] h-full w-full max-w-[420px]">
+                    <div class="bg-gradient-to-tl from-[#4169e1] to-[#5BBCE4] px-4 py-2 2xl:px-8 2xl:py-6 drop-shadow-md hover:scale-[1.01] rounded-lg flex flex-col max-h-[190px] 2xl:max-h-[210px] h-full w-full 2xl:max-w-[420px] max-w-[400px]">
                       <h2 class="text-lg text-white/80">Wind Direction</h2>
                       <div class="w-full justify-center flex items-center flex-col">
-                        <img src="./images/icons/compass.svg" width="100" height="100" alt="UV Index 9">
-                        <h2 class="text-lg font-montserrat">103&deg; East</h2>
+                        <img src="./images/icons/compass.svg" width="100" height="100" alt="UV Index">
+                        <h2 class="text-lg font-montserrat">${dataJson.current.wind_direction_10m}&deg;  ${equationWindDirection(dataJson.current.wind_direction_10m)}</h2>
                       </div>
                     </div>
-                    <div class="bg-gradient-to-tl from-[#4169e1] to-[#5BBCE4] px-8 py-6 drop-shadow-md hover:scale-[1.01] rounded-lg flex flex-col max-h-[210px] h-full w-full max-w-[420px]">
+                    <div class="bg-gradient-to-tl from-[#4169e1] to-[#5BBCE4] px-4 py-2 2xl:px-8 2xl:py-6 drop-shadow-md hover:scale-[1.01] rounded-lg flex flex-col max-h-[190px] 2xl:max-h-[210px] h-full w-full 2xl:max-w-[420px] max-w-[400px]">
                       <h2 class="text-lg text-white/80">Precipitation</h2>
                       <div class="w-full justify-center flex items-center flex-col">
                         <img src="./images/icons/umbrella.svg" width="100" height="100" alt="UV Index 9">
-                        <h2 class="text-lg font-montserrat">3% Low</h2>
+                        <h2 class="text-lg font-montserrat">
+                          ${dataJson.current.precipitation >= 75 ? `${dataJson.current.precipitation}% Extreme` 
+                          : dataJson.current.precipitation >= 50 ? `${dataJson.current.precipitation}% High`  
+                          : dataJson.current.precipitation >= 25 ? `${dataJson.current.precipitation}% Moderate`  
+                          : `${dataJson.current.precipitation}% Low` }
+                        </h2>
                       </div>
                     </div>
                   </div>
