@@ -87,14 +87,13 @@ function getLocation() {
 }
 getLocation();
 
-
 const fetchSearchDetailByCity = async (latitude, longitude, cityName) => {
     try {
         const weather = await fetch(`${baseUrlTwo}/forecast?latitude=${latitude}&longitude=${longitude}&forecast_days=7&current=temperature_2m,wind_direction_10m,relative_humidity_2m,apparent_temperature,is_day,precipitation,weather_code,wind_speed_10m&hourly=temperature_2m,relative_humidity_2m,apparent_temperature,precipitation_probability,rain,weather_code,visibility,wind_speed_10m&daily=weather_code,temperature_2m_max,temperature_2m_min,sunrise,sunset,daylight_duration,sunshine_duration,uv_index_max,precipitation_sum,rain_sum,wind_speed_10m_max&forecast_days=14&timezone=auto`);
         const dataJson = await weather.json(); 
         const dates = dataJson.daily.time
         console.log(dataJson);
-
+        
         searchInputLocation.value = '';
         loading.classList.add("hidden");
         loading.classList.remove("flex")
@@ -145,24 +144,22 @@ const fetchSearchDetailByCity = async (latitude, longitude, cityName) => {
       }
       const uvData = getUvIndexData(dataJson);
 
-      const loopCardData = () => {
-        return dates
-          .map((date, i) => {
+      const dashboardWeekCard = () => {
+        const data = dates.map((date, i) => {
             if (i > 0 && i <= 7) { 
               const weatherCode = dataJson.daily.weather_code[i];
               const weatherIcon = weatherCodeIcons[weatherCode]
               return `
-                <div class="bg-gradient-to-tl from-[#4169e1] to-[#5BBCE4] justify-around drop-shadow-md rounded-lg flex flex-col items-center py-2 w-[110px] 2xl:w-[130px] h-[140px] hover:scale-[1.01]">
+                <div class="bg-gradient-to-tl from-[#4169e1] to-[#5BBCE4] justify-around drop-shadow-md rounded-lg flex flex-col items-center py-2 w-[110px] 2xl:w-[140px] h-[150px] hover:scale-[1.01]">
                   <h2 class="text-lg">${getDayOnly(date)}</h2>
-                  <img src="${weatherIcon.image}" alt="${weatherIcon.name}" width="40" height="40">
+                  <img src="${weatherIcon.image}" alt="${weatherIcon.name}" width="50" height="50">
                   <p class="font-montserrat">${dataJson.daily.temperature_2m_max[i]}&deg; <span class="font-montserrat ml-1 text-white/70">${dataJson.daily.temperature_2m_min[i]}&deg;</span></p>
                 </div>
               `;
             }
           })
-          .join('');
+         return data.join("")
     };
-      
 
         dates.forEach((date, i) => {
             if(i === 0) {
@@ -198,12 +195,12 @@ const fetchSearchDetailByCity = async (latitude, longitude, cityName) => {
                 <div class="max-h-[340px] 2xl:max-h-[400px] h-full w-full py-3 2xl:py-6 flex flex-col gap-6">
                   <h2 class="font-semibold pb-2 border-b border-white text-2xl max-w-[65px]">Week</h2>
                   <div class="flex items-center pt-4 w-full justify-between pr-10">
-                  ${loopCardData()}
+                    ${dashboardWeekCard()}
                   </div>
                 </div>
                 <div class="h-full w-full py-4 -mt-4 xl:mt-2 flex-col flex gap-6 pr-10">
                   <h2 class="text-2xl font-semibold">Today Highlights</h2>
-                  <div class="grid grid-cols-3 2xl:pt-2 grid-rows-[repeat(2,_max-content)] h-full justify-between gap-10 w-full">
+                  <div class="grid grid-cols-3 2xl:pt-2 grid-rows-[repeat(2,_max-content)] h-full justify-between gap-6 2xl:gap-10 w-full">
                     <div class="bg-gradient-to-tl from-[#4169e1] to-[#5BBCE4] px-4 py-2 2xl:px-8 2xl:py-6 drop-shadow-md hover:scale-[1.01] rounded-lg flex flex-col max-h-[190px] 2xl:max-h-[210px] h-full w-full 2xl:max-w-[420px] max-w-[400px]">
                       <h2 class="text-lg text-white/80">UV Index</h2>
                       <div class="w-full justify-center flex items-center flex-col">
@@ -238,16 +235,14 @@ const fetchSearchDetailByCity = async (latitude, longitude, cityName) => {
                       <div class="flex items-center flex-col gap-4">
                         <div class="flex items-center gap-2">
                           <img src="./images/icons/sunrise.svg" width="40" height="40"  alt="Sunrise icon">
-                          <div class="">
+                          <div>
                             <h2 class="font-montserrat">${getSunriseTime(dataJson.daily.sunrise[0])}</h2>
-                            <p class="font-montserrat text-white/70 text-sm">- 1m 46s</p>
                           </div>
                         </div>
                         <div class="flex items-center gap-2">
                           <img src="./images/icons/sunset.svg"  width="40" height="40" alt="Sunset icon">
-                          <div class="">
+                          <div>
                             <h2 class="font-montserrat">${getSunsetTime(dataJson.daily.sunset[0])}</h2>
-                            <p class="font-montserrat text-white/70 text-sm">+ 2m 24s</p>
                           </div>
                         </div>
                       </div>
@@ -256,7 +251,7 @@ const fetchSearchDetailByCity = async (latitude, longitude, cityName) => {
                       <h2 class="text-lg text-white/80">Wind Direction</h2>
                       <div class="w-full justify-center flex items-center flex-col">
                         <img src="./images/icons/compass.svg" width="100" height="100" alt="UV Index">
-                        <h2 class="text-lg font-montserrat">${dataJson.current.wind_direction_10m}&deg;  ${equationWindDirection(dataJson.current.wind_direction_10m)}</h2>
+                        <h2 class="text-lg font-montserrat">${dataJson.current.wind_direction_10m}&deg; ${equationWindDirection(dataJson.current.wind_direction_10m)}</h2>
                       </div>
                     </div>
                     <div class="bg-gradient-to-tl from-[#4169e1] to-[#5BBCE4] px-4 py-2 2xl:px-8 2xl:py-6 drop-shadow-md hover:scale-[1.01] rounded-lg flex flex-col max-h-[190px] 2xl:max-h-[210px] h-full w-full 2xl:max-w-[420px] max-w-[400px]">
@@ -271,8 +266,7 @@ const fetchSearchDetailByCity = async (latitude, longitude, cityName) => {
                         </h2>
                       </div>
                     </div>
-                  </div>
-                  
+                  </div>                 
                 </div>
               </div>
             </div>`

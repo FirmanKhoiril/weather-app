@@ -13,9 +13,11 @@
     </script>
 </head>
 <body>
+  <!-- Loading screen-->
   <div id="loading" class=" hidden min-h-screen items-center justify-center w-full">
     <div class="custom-loader"></div>
   </div>
+  <!-- Homepage -->
     <main id="homepage" class="flex py-14 2xl:px-0 px-12 container gap-7 h-full mx-auto flex-col">
       <div class="w-full flex justify-between items-center gap-8">
         <div>
@@ -53,9 +55,7 @@
         </div>
       </div>
     </main>
-
-    
-    
+    <!-- Dashboard Search Location detail -->
     <main  class="flex gap-7 h-full overflow-y-hidden relative w-full">
       <button type="button" id="btn-back-homepage" class=" h-[40px] w-[40px] rounded-full hidden justify-center items-center bg-white/20 hover:bg-white/30 drop-shadow-lg absolute top-6 z-10 left-6" onclick="backToHomepage()">
         <img src="./images/icons/back.svg" alt="Back Icon">
@@ -65,9 +65,11 @@
       </div>
       
     </main>
+    <!-- Data -->
     <script src="weatherCode.js"></script>
     <script src="uvIndex.js"></script>
     <script src="windDirection.js"></script>
+    <!-- Data -->
     <script src="index.js"></script>
 </body>
 </html>
