@@ -49,7 +49,6 @@ const fetchWeather = async (location) => {
         const weather = await fetch(`${baseUrl}/search?name=${location}&count=10&language=en&format=json`);
         const dataJson = await weather.json();
         if (dataJson.results && dataJson.results.length > 0) {
-            console.log(dataJson)
             const { latitude, longitude, name } = dataJson.results[0];
             return { latitude, longitude, name };
         } else {
@@ -187,6 +186,17 @@ const fetchSearchDetailByCity = async (latitude, longitude, cityName) => {
                   <div class="flex text-white/90 items-center rounded-lg">
                     <img src="${dataJson.current.is_day === 1 ? "./images/icons/clear-day.svg" : "./images/icons/clear-night.svg"}" alt="humidity icon" class=" mr-3.5" width="28" height="28">
                     <h2 class="text-lg">${dataJson.current.is_day === 1 ? "Morning" : "Night"}</h2>
+                  </div>
+                </div>
+                <hr class="border-white/20 my-8" />
+                <div class="flex flex-col items-start gap-6">
+                  <div class="flex flex-row items-center gap-4">
+                    <h2 class="text-lg">Min Temperature:</h2>
+                    <p class="ml-1 font-montserrat text-lg">${dataJson.daily.temperature_2m_min[0] + "&deg;"}</p>
+                  </div>
+                  <div class="flex flex-row items-center gap-4">
+                    <h2 class="text-lg">Max Temperature:</h2>
+                    <p class="font-montserrat text-lg">${dataJson.daily.temperature_2m_max[0] + "&deg;"}</p>
                   </div>
                 </div>
               </div>
