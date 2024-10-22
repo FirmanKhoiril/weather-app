@@ -132,8 +132,9 @@ const fetchSearchDetailByCity = async (latitude, longitude, cityName) => {
 
       function getDayTimes(date) {
         const dates = new Date(date);
+        const dateNow = new Date()
         const day = dates.toLocaleDateString("en-US", { weekday: "long" });
-        const time = dates.toLocaleTimeString("en-US", { hour: '2-digit', minute: '2-digit' });
+        const time = dateNow.toLocaleTimeString("en-US", { hour: '2-digit', minute: '2-digit' });
         return `${day}, <span class="font-montserrat">${time}</span>` 
       }
       function getDayOnly(date) {
