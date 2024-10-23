@@ -50,7 +50,9 @@ const fetchWeather = async (location) => {
         const weather = await fetch(`${baseUrl}/search?name=${location}&count=10&language=en&format=json`);
         const dataJson = await weather.json();
         if (dataJson.results && dataJson.results.length > 0) {
-            const { latitude, longitude, cityName } = dataJson.results[0];
+            const { latitude, longitude, name: cityName } = dataJson.results[0];
+            console.log(dataJson.results[0]);
+            
             return { latitude, longitude, cityName };
         } else {
           alert("Location Not Found")
@@ -72,7 +74,7 @@ formSubmit.addEventListener("submit", async function (e) {
     home.classList.remove('flex');
     home.classList.add('hidden');
     
-    if (weather) fetchSearchDetailByCity(weather?.latitude, weather?.longitude, weather?.name);
+    if (weather) fetchSearchDetailByCity(weather?.latitude, weather?.longitude, weather?.cityName);
     // to new page and display all the data
 })
 
@@ -90,6 +92,8 @@ function getLocation() {
 getLocation();
 
 const fetchSearchDetailByCity = async (latitude, longitude, cityName) => {
+  console.log(cityName);
+  
     try {
         const weather = await fetch(`${baseUrlTwo}/forecast?latitude=${latitude}&longitude=${longitude}&forecast_days=7&current=temperature_2m,wind_direction_10m,relative_humidity_2m,apparent_temperature,is_day,precipitation,weather_code,wind_speed_10m&hourly=temperature_2m,relative_humidity_2m,apparent_temperature,precipitation_probability,rain,weather_code,visibility,wind_speed_10m&daily=weather_code,temperature_2m_max,temperature_2m_min,sunrise,sunset,daylight_duration,sunshine_duration,uv_index_max,precipitation_sum,rain_sum,wind_speed_10m_max&forecast_days=14&timezone=auto`);
         const dataJson = await weather.json(); 
@@ -166,19 +170,25 @@ const fetchSearchDetailByCity = async (latitude, longitude, cityName) => {
           let timeOfDay;
       
           switch (true) {
-              case (hours >= 5 && hours < 12):
-                  timeOfDay = "Morning";
-                  break;
-              case (hours >= 12 && hours < 17):
-                  timeOfDay = "Afternoon";
-                  break;
-              case (hours >= 17 && hours < 21):
-                  timeOfDay = "Evening";
-                  break;
-              default:
-                  timeOfDay = "Night";
-                  break;
-          }
+            case (hours >= 4 && hours < 6):
+                timeOfDay = "Dawn";
+                break;
+            case (hours >= 6 && hours < 12):
+                timeOfDay = "Morning";
+                break;
+            case (hours >= 12 && hours < 17):
+                timeOfDay = "Afternoon";
+                break;
+            case (hours >= 17 && hours < 21):
+                timeOfDay = "Evening";
+                break;
+            case (hours >= 22 && hours < 3):
+                timeOfDay = "Midnight";
+                break;
+            default:
+                timeOfDay = "Night";
+                break;
+        }
           return timeOfDay;
       }
 
