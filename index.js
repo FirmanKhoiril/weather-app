@@ -49,13 +49,13 @@ const fetchWeather = async (location) => {
         const weather = await fetch(`${baseUrl}/search?name=${location}&count=10&language=en&format=json`);
         const dataJson = await weather.json();
         if (dataJson.results && dataJson.results.length > 0) {
-            const { latitude, longitude, name } = dataJson.results[0];
-            return { latitude, longitude, name };
+            const { latitude, longitude, cityName } = dataJson.results[0];
+            return { latitude, longitude, cityName };
         } else {
-            console.log("Location not found");
+          alert("Location Not Found")
         }
     } catch (error) {
-        console.log(error);
+      alert("Check your connection")
     }
 }
 
@@ -91,8 +91,7 @@ const fetchSearchDetailByCity = async (latitude, longitude, cityName) => {
         const weather = await fetch(`${baseUrlTwo}/forecast?latitude=${latitude}&longitude=${longitude}&forecast_days=7&current=temperature_2m,wind_direction_10m,relative_humidity_2m,apparent_temperature,is_day,precipitation,weather_code,wind_speed_10m&hourly=temperature_2m,relative_humidity_2m,apparent_temperature,precipitation_probability,rain,weather_code,visibility,wind_speed_10m&daily=weather_code,temperature_2m_max,temperature_2m_min,sunrise,sunset,daylight_duration,sunshine_duration,uv_index_max,precipitation_sum,rain_sum,wind_speed_10m_max&forecast_days=14&timezone=auto`);
         const dataJson = await weather.json(); 
         const dates = dataJson.daily.time
-        console.log(dataJson);
-        
+
         searchInputLocation.value = '';
         loading.classList.add("hidden");
         loading.classList.remove("flex")
@@ -109,43 +108,41 @@ const fetchSearchDetailByCity = async (latitude, longitude, cityName) => {
             return { image: uvIndex[roundedUv].image, name: uvIndex[roundedUv].name };
         }
           return { image: './images/icons/uv-index.svg', name: 'Very Low' };
-      }
+        }
 
-      function equationWindDirection(degree) {
+        function equationWindDirection(degree) {
         const direction = Object.keys(windDirection).map(Number)
         const closestDirection = direction.reduce((prev, curr) => 
           Math.abs(curr - degree) < Math.abs(prev - degree) ? curr : prev
       );
       return windDirection[closestDirection].name;
-      }
+        }
 
-      function getSunriseTime(date) {
-        const dates = new Date(date);
-        const time = dates.toLocaleTimeString("en-US", { hour: '2-digit', minute: '2-digit' });
-        return `<span class="font-montserrat">${time}</span>`
-      }
-      function getSunsetTime(date) {
-        const dates = new Date(date);
-        const time = dates.toLocaleTimeString("en-US", { hour: '2-digit', minute: '2-digit' });
-        return `<span class="font-montserrat">${time}</span>`
-      }
+        function getSunriseTime(date) {
+          const dates = new Date(date);
+          const time = dates.toLocaleTimeString("en-US", { hour: '2-digit', minute: '2-digit' });
+          return `<span class="font-montserrat">${time}</span>`
+        }
+        function getSunsetTime(date) {
+          const dates = new Date(date);
+          const time = dates.toLocaleTimeString("en-US", { hour: '2-digit', minute: '2-digit' });
+          return `<span class="font-montserrat">${time}</span>`
+        }
 
-      function getDayTimes(date) {
-        const dates = new Date(date);
-        const dateNow = new Date()
-        const day = dates.toLocaleDateString("en-US", { weekday: "long" });
-        const time = dateNow.toLocaleTimeString("en-US", { hour: '2-digit', minute: '2-digit' });
-        return `${day}, <span class="font-montserrat">${time}</span>` 
-      }
-      function getDayOnly(date) {
-        const dates = new Date(date);
-        const day = dates.toLocaleDateString("en-US", { weekday: "long" });
-        return day.substring(0, 3) 
-      }
-      const uvData = getUvIndexData(dataJson);
+        function getDayTimes(date) {
+          const dates = new Date(date);
+          const day = dates.toLocaleDateString("en-US", { weekday: "long" });
+          return `${day}` 
+        }
+        function getDayOnly(date) {
+          const dates = new Date(date);
+          const day = dates.toLocaleDateString("en-US", { weekday: "long" });
+          return day.substring(0, 3) 
+        }
+        const uvData = getUvIndexData(dataJson);
 
-      const dashboardWeekCard = () => {
-        const data = dates.map((date, i) => {
+        const dashboardWeekCard = () => {
+          const data = dates.map((date, i) => {
             if (i > 0 && i <= 7) { 
               const weatherCode = dataJson.daily.weather_code[i];
               const weatherIcon = weatherCodeIcons[weatherCode]
@@ -159,7 +156,28 @@ const fetchSearchDetailByCity = async (latitude, longitude, cityName) => {
             }
           })
          return data.join("")
-    };
+        };
+
+        function getTimeOfDay(date) {
+          const hours = new Date(date).getHours();
+          let timeOfDay;
+      
+          switch (true) {
+              case (hours >= 5 && hours < 12):
+                  timeOfDay = "Morning";
+                  break;
+              case (hours >= 12 && hours < 17):
+                  timeOfDay = "Afternoon";
+                  break;
+              case (hours >= 17 && hours < 21):
+                  timeOfDay = "Evening";
+                  break;
+              default:
+                  timeOfDay = "Night";
+                  break;
+          }
+          return timeOfDay;
+      }
 
         dates.forEach((date, i) => {
             if(i === 0) {
@@ -176,7 +194,10 @@ const fetchSearchDetailByCity = async (latitude, longitude, cityName) => {
                 </div>
                 <div class="flex flex-col gap-4">
                   <h2 class="font-montserrat text-8xl">${Math.floor(dataJson.current.temperature_2m)}&deg;</h2>
-                  <p class="text-lg">${getDayTimes(date)} </p>
+                  <p class="text-lg">
+                    ${getDayTimes(date)},
+                    <span class="font-montserrat"> ${new Date().toLocaleTimeString("en-US", { hour: '2-digit', minute: '2-digit' })}</span>
+                  </p>
                 </div>
                 <hr class="border-white/20 my-8" />
                 <div class="flex flex-col items-start gap-6">
@@ -186,7 +207,7 @@ const fetchSearchDetailByCity = async (latitude, longitude, cityName) => {
                   </div>
                   <div class="flex text-white/90 items-center rounded-lg">
                     <img src="${dataJson.current.is_day === 1 ? "./images/icons/clear-day.svg" : "./images/icons/clear-night.svg"}" alt="humidity icon" class=" mr-3.5" width="28" height="28">
-                    <h2 class="text-lg">${dataJson.current.is_day === 1 ? "Morning" : "Night"}</h2>
+                    <h2 class="text-lg">${getTimeOfDay(new Date())}</h2>
                   </div>
                 </div>
                 <hr class="border-white/20 my-8" />
@@ -204,7 +225,9 @@ const fetchSearchDetailByCity = async (latitude, longitude, cityName) => {
 
               <div class="flex flex-col 2xl:px-4 overflow-hidden max-h-full gap-4 w-full justify-between">
                 <div class="max-h-[340px] 2xl:max-h-[400px] h-full w-full py-3 2xl:py-6 flex flex-col gap-6">
-                  <h2 class="font-semibold pb-2 border-b border-white text-2xl max-w-[65px]">Week</h2>
+                  <div class="flex w-full justify-between items-center pr-10">
+                    <h2 class="font-semibold pb-2 border-b border-white text-2xl max-w-[65px]">Week</h2>
+                  </div>
                   <div class="flex items-center pt-4 w-full justify-between pr-10">
                     ${dashboardWeekCard()}
                   </div>
@@ -284,7 +307,7 @@ const fetchSearchDetailByCity = async (latitude, longitude, cityName) => {
             }
         })
     } catch (error) {   
-        console.log(error)
+      alert("Check your connection")
     }
 }
 
@@ -386,7 +409,7 @@ const fetchForecast = async (latitude, longitude) => {
     ;}
 )
     } catch (error) {
-        console.log(error);
+      alert("Check your connection")
     } finally {
         loading.classList.add("hidden");
         loading.classList.remove("flex")
@@ -401,5 +424,3 @@ function backToHomepage() {
     home.classList.remove('hidden');
     containerSearchDetail.innerHTML = '';
 }
-
-
