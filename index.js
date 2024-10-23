@@ -4,6 +4,7 @@ const loading = document.getElementById("loading")
 const home = document.getElementById("homepage")
 const btnBackHomepage = document.getElementById("btn-back-homepage")
 const containerSearchDetail = document.getElementById("container-search-detail")
+const formSubmit = document.getElementById("form-submit")
 
 function getCurrentDate(date) {
     const options = { 
@@ -33,13 +34,13 @@ function showClearButton() {
     }
 }
 
-searchInputLocation.addEventListener('input', showClearButton);
+searchInputLocation?.addEventListener('input', showClearButton);
 
 function clearInputValue () {
     searchInputLocation.value = '';
     showClearButton();
 }
-clearInputBtn.addEventListener('click', clearInputValue);
+clearInputBtn?.addEventListener('click', clearInputValue);
 
 const baseUrl = "https://geocoding-api.open-meteo.com/v1";
 const baseUrlTwo = "https://api.open-meteo.com/v1"
@@ -53,13 +54,15 @@ const fetchWeather = async (location) => {
             return { latitude, longitude, cityName };
         } else {
           alert("Location Not Found")
+          loading.classList.add("hidden");
+          loading.classList.remove("flex")
         }
     } catch (error) {
-      alert("Check your connection")
+      console.log(error.message)
     }
 }
 
-document.getElementById("form-submit").addEventListener("submit", async function (e) {
+formSubmit.addEventListener("submit", async function (e) {
     e.preventDefault()
     
     const location =  searchInputLocation.value
@@ -90,7 +93,7 @@ const fetchSearchDetailByCity = async (latitude, longitude, cityName) => {
     try {
         const weather = await fetch(`${baseUrlTwo}/forecast?latitude=${latitude}&longitude=${longitude}&forecast_days=7&current=temperature_2m,wind_direction_10m,relative_humidity_2m,apparent_temperature,is_day,precipitation,weather_code,wind_speed_10m&hourly=temperature_2m,relative_humidity_2m,apparent_temperature,precipitation_probability,rain,weather_code,visibility,wind_speed_10m&daily=weather_code,temperature_2m_max,temperature_2m_min,sunrise,sunset,daylight_duration,sunshine_duration,uv_index_max,precipitation_sum,rain_sum,wind_speed_10m_max&forecast_days=14&timezone=auto`);
         const dataJson = await weather.json(); 
-        const dates = dataJson.daily.time
+        const dates = dataJson.daily?.time
 
         searchInputLocation.value = '';
         loading.classList.add("hidden");
@@ -307,7 +310,7 @@ const fetchSearchDetailByCity = async (latitude, longitude, cityName) => {
             }
         })
     } catch (error) {   
-      alert("Check your connection")
+      console.log(error.message)
     }
 }
 
@@ -409,7 +412,7 @@ const fetchForecast = async (latitude, longitude) => {
     ;}
 )
     } catch (error) {
-      alert("Check your connection")
+      console.log(error.message)
     } finally {
         loading.classList.add("hidden");
         loading.classList.remove("flex")

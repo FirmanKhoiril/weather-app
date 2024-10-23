@@ -9,7 +9,20 @@
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
     <title>Weather App</title>
-    <script defer src="./tailwind.config.js">
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: {
+              primary: '#4169e1',
+              secondary: '#5BBCE4',
+            },
+            fontFamily: {
+              montserrat: ["Montserrat", "sans-serif"]
+            }
+          },
+        },
+      };
     </script>
 </head>
 <body>
