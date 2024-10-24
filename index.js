@@ -27,11 +27,10 @@ function getCurrentDate(date) {
 }
 
 function showClearButton() {
-    if (searchInputLocation.value.length !== 0) {
-        clearInputBtn.style.display = "flex";
-    } else {
-        clearInputBtn.style.display = "none";
-    }
+    if (searchInputLocation.value.length !== 0) return clearInputBtn.style.display = "flex";
+    
+    return clearInputBtn.style.display = "none";
+ 
 }
 
 searchInputLocation?.addEventListener('input', showClearButton);
@@ -56,8 +55,6 @@ const fetchWeather = async (location) => {
             return { latitude, longitude, cityName };
         } else {
           alert("Location Not Found")
-          loading.classList.add("hidden");
-          loading.classList.remove("flex")
         }
     } catch (error) {
       console.log(error.message)
@@ -92,8 +89,6 @@ function getLocation() {
 getLocation();
 
 const fetchSearchDetailByCity = async (latitude, longitude, cityName) => {
-  console.log(cityName);
-  
     try {
         const weather = await fetch(`${baseUrlTwo}/forecast?latitude=${latitude}&longitude=${longitude}&forecast_days=7&current=temperature_2m,wind_direction_10m,relative_humidity_2m,apparent_temperature,is_day,precipitation,weather_code,wind_speed_10m&hourly=temperature_2m,relative_humidity_2m,apparent_temperature,precipitation_probability,rain,weather_code,visibility,wind_speed_10m&daily=weather_code,temperature_2m_max,temperature_2m_min,sunrise,sunset,daylight_duration,sunshine_duration,uv_index_max,precipitation_sum,rain_sum,wind_speed_10m_max&forecast_days=14&timezone=auto`);
         const dataJson = await weather.json(); 
@@ -146,7 +141,6 @@ const fetchSearchDetailByCity = async (latitude, longitude, cityName) => {
           const day = dates.toLocaleDateString("en-US", { weekday: "long" });
           return day.substring(0, 3) 
         }
-        const uvData = getUvIndexData(dataJson);
 
         const dashboardWeekCard = () => {
           const data = dates.map((date, i) => {
@@ -156,13 +150,20 @@ const fetchSearchDetailByCity = async (latitude, longitude, cityName) => {
               return `
                 <div class="bg-gradient-to-tl from-[#4169e1] to-[#5BBCE4] justify-around drop-shadow-md rounded-lg flex flex-col items-center py-2 w-[110px] 2xl:w-[140px] h-[150px] hover:scale-[1.01]">
                   <h2 class="text-lg">${getDayOnly(date)}</h2>
-                  <img src="${weatherIcon.image}" alt="${weatherIcon.name}" width="50" height="50">
+                  <img src="${weatherIcon.image}"  class="drop-shadow-md" alt="${weatherIcon.name}" width="50" height="50">
                   <p class="font-montserrat">${dataJson.daily.temperature_2m_max[i]}&deg; <span class="font-montserrat ml-1 text-white/70">${dataJson.daily.temperature_2m_min[i]}&deg;</span></p>
                 </div>
               `;
             }
           })
          return data.join("")
+        };
+
+        const humidityMessage = (humidity) => {
+          if (humidity >= 75) return "Very High 😨";
+          if (humidity >= 50) return "High 😐";
+          if (humidity >= 30) return "Moderate 😊👌";
+          return "Low 😌";
         };
 
         function getTimeOfDay(date) {
@@ -190,7 +191,20 @@ const fetchSearchDetailByCity = async (latitude, longitude, cityName) => {
                 break;
         }
           return timeOfDay;
-      }
+        }
+        function getPrecipitationLevel(precipitation) {
+          if (precipitation >= 75) {
+              return `${precipitation}% Extreme`;
+          } else if (precipitation >= 50) {
+              return `${precipitation}% High`;
+          } else if (precipitation >= 25) {
+              return `${precipitation}% Moderate`;
+          } else {
+              return `${precipitation}% Low`;
+          }
+        }
+
+        const uvData = getUvIndexData(dataJson);
 
         dates.forEach((date, i) => {
             if(i === 0) {
@@ -203,7 +217,7 @@ const fetchSearchDetailByCity = async (latitude, longitude, cityName) => {
                   <p class="text-2xl ml-12 uppercase">${cityName === "Batavia" ? "Jakarta" : cityName}</p>
                 </div>
                 <div class="flex items-center mt-4 justify-center w-full">
-                  <img src="${weatherIcon.image}" alt="${weatherIcon.name}" width="180" height="180">
+                  <img src="${weatherIcon.image}" class="drop-shadow-lg" alt="${weatherIcon.name}" width="180" height="180">
                 </div>
                 <div class="flex flex-col gap-4">
                   <h2 class="font-montserrat text-8xl">${Math.floor(dataJson.current.temperature_2m)}&deg;</h2>
@@ -235,7 +249,6 @@ const fetchSearchDetailByCity = async (latitude, longitude, cityName) => {
                   </div>
                 </div>
               </div>
-
               <div class="flex flex-col 2xl:px-4 overflow-hidden max-h-full gap-4 w-full justify-between">
                 <div class="max-h-[340px] 2xl:max-h-[400px] h-full w-full py-3 2xl:py-6 flex flex-col gap-6">
                   <div class="flex w-full justify-between items-center pr-10">
@@ -270,10 +283,7 @@ const fetchSearchDetailByCity = async (latitude, longitude, cityName) => {
                           <span class="text-2xl mb-6">%</span>
                         </div>
                         <p class="text-xl">
-                          ${dataJson.current.relative_humidity_2m >= 75 ? "Very High 😨" 
-                          : dataJson.current.relative_humidity_2m >= 50 ? "High 😐" 
-                          : dataJson.current.relative_humidity_2m >= 30 ? "Moderate 😊👌" 
-                          : "Low 😌"}
+                        ${humidityMessage(dataJson.current.relative_humidity_2m)}
                         </p>
                       </div>
                     </div>
@@ -306,10 +316,7 @@ const fetchSearchDetailByCity = async (latitude, longitude, cityName) => {
                       <div class="w-full justify-center flex items-center flex-col">
                         <img src="./images/icons/umbrella.svg" width="100" height="100" alt="UV Index 9">
                         <h2 class="text-lg font-montserrat">
-                          ${dataJson.current.precipitation >= 75 ? `${dataJson.current.precipitation}% Extreme` 
-                          : dataJson.current.precipitation >= 50 ? `${dataJson.current.precipitation}% High`  
-                          : dataJson.current.precipitation >= 25 ? `${dataJson.current.precipitation}% Moderate`  
-                          : `${dataJson.current.precipitation}% Low` }
+                          ${getPrecipitationLevel(dataJson.current.precipitation)}
                         </h2>
                       </div>
                     </div>
